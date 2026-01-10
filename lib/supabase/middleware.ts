@@ -35,18 +35,24 @@ export async function updateSession(request: NextRequest) {
         data: { user },
     } = await supabase.auth.getUser()
 
-    // Protect routes - redirect to login if not authenticated
-    const isAuthRoute = request.nextUrl.pathname.startsWith('/auth')
-    const isPublicRoute = request.nextUrl.pathname === '/' || isAuthRoute
+    const pathname = request.nextUrl.pathname
 
+    // Define public routes
+    const isAuthRoute = pathname.startsWith('/auth')
+    const isPublicRoute = pathname === '/' || isAuthRoute
+
+    // If not authenticated and trying to access protected route
     if (!user && !isPublicRoute) {
-        const url = request.nextUrl.clone()
-        url.pathname = '/auth/login'
-        return NextResponse.redirect(url)
+        // Avoid redirect loop - don't redirect if already going to login
+        if (pathname !== '/auth/login') {
+            const url = request.nextUrl.clone()
+            url.pathname = '/auth/login'
+            return NextResponse.redirect(url)
+        }
     }
 
-    // Redirect authenticated users away from login page
-    if (user && request.nextUrl.pathname === '/auth/login') {
+    // If authenticated and on login page, redirect to notes
+    if (user && pathname === '/auth/login') {
         const url = request.nextUrl.clone()
         url.pathname = '/notes'
         return NextResponse.redirect(url)

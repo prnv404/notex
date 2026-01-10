@@ -53,10 +53,6 @@ export function NotexShell() {
                     <div className="flex flex-col items-center justify-center h-full text-[var(--muted-foreground)]">
                         <div className="text-4xl mb-4 font-light opacity-20">NOTEX</div>
                         <p>Select a note to view or edit</p>
-                        <div className="flex gap-2 mt-4 text-xs opacity-60">
-                            <span>Ctrl+N New Note</span>
-                            <span>Ctrl+Shift+F New Folder</span>
-                        </div>
                     </div>
                 )}
             </div>
