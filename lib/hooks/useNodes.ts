@@ -84,6 +84,9 @@ export function useNodes() {
             return null
         }
 
+        // Immediately refresh the nodes list
+        await fetchNodes()
+
         return data
     }
 
@@ -95,6 +98,9 @@ export function useNodes() {
             return false
         }
 
+        // Immediately refresh the nodes list
+        await fetchNodes()
+
         return true
     }
 
@@ -105,6 +111,9 @@ export function useNodes() {
             console.error('Error deleting node:', error)
             return false
         }
+
+        // Immediately refresh the nodes list
+        await fetchNodes()
 
         return true
     }

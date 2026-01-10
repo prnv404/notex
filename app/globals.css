@@ -88,9 +88,9 @@
     --vscode-tab-active-bg: #1a1f2e;
     --vscode-border: #2a3447;
     /* Visible but subtle borders */
-    --vscode-list-hover: #060708;
+    --vscode-list-hover: #2c2f31;
     /* Subtle hover state */
-    --vscode-list-active: #2d3b52;
+    --vscode-list-active: #1f2125;
     /* Clear active state with blue tint */
     --vscode-list-active-foreground: #e3e8f0;
     /* Brighter text when active */
@@ -137,7 +137,7 @@
     margin: 0;
     padding: 0;
     overscroll-behavior: none;
-    font-size: 125%;
+    font-size: 120%;
     /* Increase base font size by 25% */
   }
 
@@ -181,6 +181,22 @@
   ::-moz-selection {
     background-color: var(--tt-selection-color);
   }
+
+  /* Ensure all buttons and clickable elements show pointer cursor */
+  button,
+  [role="button"],
+  [type="button"],
+  [type="submit"],
+  [type="reset"],
+  a,
+  select {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [role="button"]:disabled {
+    cursor: not-allowed;
+  }
 }
 
 /* TipTap Editor Styles */
@@ -202,7 +218,7 @@
 
 .simple-editor-content {
   /* Reduced width for better readability */
-  max-width: 700px;
+  max-width: 750px;
   width: 100%;
   margin: 5 auto;
   height: 100%;

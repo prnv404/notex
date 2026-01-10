@@ -19,9 +19,9 @@ import {
 import { cn } from "@/lib/tiptap-utils"
 import { TreeNode } from "@/lib/types/node"
 import { Button } from "@/components/tiptap-ui-primitive/button"
-import { InputDialog } from "@/components/InputDialog"
 import { DeleteDialog } from "@/components/DeleteDialog"
 import { UserProfile } from "@/components/UserProfile"
+import { InlineInput } from "@/components/InlineInput"
 
 interface AppSidebarProps {
     tree: TreeNode[]
@@ -40,8 +40,9 @@ const FileTreeItem = ({
     onSelectNode,
     onCreateNode,
     onDeleteNode,
-    onOpenCreateDialog,
-    onOpenDeleteDialog
+    creatingNode,
+    onCancelCreate,
+    onStartCreate
 }: {
     node: TreeNode;
     depth?: number;
@@ -49,22 +50,49 @@ const FileTreeItem = ({
     onSelectNode: (id: string) => void;
     onCreateNode: (type: 'folder' | 'note', title: string, parentId?: string | null) => Promise<any>;
     onDeleteNode: (id: string) => Promise<boolean>;
-    onOpenCreateDialog: (type: 'folder' | 'note', parentId: string) => void;
-    onOpenDeleteDialog: (nodeId: string, nodeTitle: string) => void;
+    creatingNode: { type: 'folder' | 'note'; parentId: string } | null;
+    onCancelCreate: () => void;
+    onStartCreate: (type: 'folder' | 'note', parentId: string) => void;
 }) => {
     const [isOpen, setIsOpen] = React.useState(false)
     const [isHovered, setIsHovered] = React.useState(false)
+    const [deleteDialog, setDeleteDialog] = React.useState<{
+        isOpen: boolean
+        nodeId: string | null
+        nodeTitle: string
+    }>({ isOpen: false, nodeId: null, nodeTitle: '' })
 
-    const handleCreate = (e: React.MouseEvent, type: 'folder' | 'note') => {
+    const handleCreateNote = (e: React.MouseEvent) => {
         e.stopPropagation()
-        onOpenCreateDialog(type, node.id)
         setIsOpen(true)
+        onStartCreate('note', node.id)
+    }
+
+    const handleCreateFolder = (e: React.MouseEvent) => {
+        e.stopPropagation()
+        setIsOpen(true)
+        onStartCreate('folder', node.id)
     }
 
     const handleDelete = (e: React.MouseEvent) => {
         e.stopPropagation()
-        onOpenDeleteDialog(node.id, node.title)
+        setDeleteDialog({ isOpen: true, nodeId: node.id, nodeTitle: node.title })
     }
+
+    const handleDeleteConfirm = async () => {
+        if (deleteDialog.nodeId) {
+            await onDeleteNode(deleteDialog.nodeId)
+        }
+    }
+
+    const handleInlineCreate = async (title: string) => {
+        if (creatingNode) {
+            await onCreateNode(creatingNode.type, title, creatingNode.parentId)
+            onCancelCreate()
+        }
+    }
+
+    const isCreatingHere = creatingNode?.parentId === node.id
 
     return (
         <div>
@@ -94,7 +122,7 @@ const FileTreeItem = ({
 
                 <span className="mr-1.5 text-blue-400 shrink-0">
                     {node.type === "folder" ? (
-                        null // Folder icon could go here if desired, usually implied by chevron + name in VS Code
+                        null
                     ) : (
                         <FileIcon size={14} />
                     )}
@@ -106,17 +134,25 @@ const FileTreeItem = ({
                 <div className="flex items-center gap-1.5 opacity-100 transition-opacity">
                     {node.type === 'folder' && (
                         <>
-                            <FilePlus size={14} className="hover:text-blue-500 cursor-pointer" onClick={(e) => handleCreate(e, 'note')} />
-                            <FolderPlus size={14} className="hover:text-blue-500 cursor-pointer" onClick={(e) => handleCreate(e, 'folder')} />
+                            <FilePlus size={14} className="hover:text-blue-500 cursor-pointer" onClick={handleCreateNote} />
+                            <FolderPlus size={14} className="hover:text-blue-500 cursor-pointer" onClick={handleCreateFolder} />
                         </>
                     )}
                     <Trash2 size={14} className="hover:text-red-500 cursor-pointer" onClick={handleDelete} />
                 </div>
             </div>
 
-            {node.type === "folder" && isOpen && node.children && (
+            {node.type === "folder" && isOpen && (
                 <div>
-                    {node.children.map((child) => (
+                    {isCreatingHere && creatingNode && (
+                        <InlineInput
+                            type={creatingNode.type}
+                            depth={depth + 1}
+                            onSubmit={handleInlineCreate}
+                            onCancel={onCancelCreate}
+                        />
+                    )}
+                    {node.children && node.children.map((child) => (
                         <FileTreeItem
                             key={child.id}
                             node={child}
@@ -125,12 +161,20 @@ const FileTreeItem = ({
                             onSelectNode={onSelectNode}
                             onCreateNode={onCreateNode}
                             onDeleteNode={onDeleteNode}
-                            onOpenCreateDialog={onOpenCreateDialog}
-                            onOpenDeleteDialog={onOpenDeleteDialog}
+                            creatingNode={creatingNode}
+                            onCancelCreate={onCancelCreate}
+                            onStartCreate={onStartCreate}
                         />
                     ))}
                 </div>
             )}
+
+            <DeleteDialog
+                isOpen={deleteDialog.isOpen}
+                onClose={() => setDeleteDialog({ ...deleteDialog, isOpen: false })}
+                onConfirm={handleDeleteConfirm}
+                itemName={deleteDialog.nodeTitle}
+            />
         </div>
     )
 }
@@ -144,35 +188,27 @@ export function AppSidebar({
     onCreateNode,
     onDeleteNode
 }: AppSidebarProps) {
-    const [createDialog, setCreateDialog] = React.useState<{
-        isOpen: boolean
+    const [creatingNode, setCreatingNode] = React.useState<{
         type: 'folder' | 'note'
-        parentId: string | null
-    }>({ isOpen: false, type: 'note', parentId: null })
+        parentId: string
+    } | null>(null)
 
-    const [deleteDialog, setDeleteDialog] = React.useState<{
-        isOpen: boolean
-        nodeId: string | null
-        nodeTitle: string
-    }>({ isOpen: false, nodeId: null, nodeTitle: '' })
-
-    const handleOpenCreateDialog = (type: 'folder' | 'note', parentId: string | null = null) => {
-        setCreateDialog({ isOpen: true, type, parentId })
+    const handleStartCreate = (type: 'folder' | 'note', parentId: string) => {
+        setCreatingNode({ type, parentId })
     }
 
-    const handleCreateSubmit = async (title: string) => {
-        await onCreateNode(createDialog.type, title, createDialog.parentId)
+    const handleCancelCreate = () => {
+        setCreatingNode(null)
     }
 
-    const handleOpenDeleteDialog = (nodeId: string, nodeTitle: string) => {
-        setDeleteDialog({ isOpen: true, nodeId, nodeTitle })
-    }
-
-    const handleDeleteConfirm = async () => {
-        if (deleteDialog.nodeId) {
-            await onDeleteNode(deleteDialog.nodeId)
+    const handleRootCreate = async (title: string) => {
+        if (creatingNode) {
+            await onCreateNode(creatingNode.type, title, null)
+            setCreatingNode(null)
         }
     }
+
+    const isCreatingRoot = creatingNode?.parentId === 'root'
 
     return (
         <div className="flex h-full select-none">
@@ -181,16 +217,32 @@ export function AppSidebar({
                 <div className="h-9 px-4 flex items-center justify-between text-xs font-semibold tracking-wide text-[var(--muted-foreground)] uppercase">
                     <span>NOTEX</span>
                     <div className="flex gap-1.5 opacity-100 transition-opacity">
-                        <div className="cursor-pointer hover:text-[var(--foreground)]" title="New File" onClick={() => handleOpenCreateDialog('note', null)}>
+                        <div
+                            className="cursor-pointer hover:text-[var(--foreground)]"
+                            title="New File"
+                            onClick={() => handleStartCreate('note', 'root')}
+                        >
                             <FilePlus size={16} />
                         </div>
-                        <div className="cursor-pointer hover:text-[var(--foreground)]" title="New Folder" onClick={() => handleOpenCreateDialog('folder', null)}>
+                        <div
+                            className="cursor-pointer hover:text-[var(--foreground)]"
+                            title="New Folder"
+                            onClick={() => handleStartCreate('folder', 'root')}
+                        >
                             <FolderPlus size={16} />
                         </div>
                     </div>
                 </div>
 
                 <div className="flex-1 overflow-auto py-2">
+                    {isCreatingRoot && creatingNode && (
+                        <InlineInput
+                            type={creatingNode.type}
+                            depth={0}
+                            onSubmit={handleRootCreate}
+                            onCancel={handleCancelCreate}
+                        />
+                    )}
                     {tree.map((node) => (
                         <FileTreeItem
                             key={node.id}
@@ -199,11 +251,12 @@ export function AppSidebar({
                             onSelectNode={onSelectNode}
                             onCreateNode={onCreateNode}
                             onDeleteNode={onDeleteNode}
-                            onOpenCreateDialog={handleOpenCreateDialog}
-                            onOpenDeleteDialog={handleOpenDeleteDialog}
+                            creatingNode={creatingNode}
+                            onCancelCreate={handleCancelCreate}
+                            onStartCreate={handleStartCreate}
                         />
                     ))}
-                    {tree.length === 0 && (
+                    {tree.length === 0 && !isCreatingRoot && (
                         <div className="p-4 text-xs text-[var(--muted-foreground)] text-center">
                             No files. Create one to get started.
                         </div>
@@ -212,21 +265,6 @@ export function AppSidebar({
 
                 <UserProfile />
             </div>
-
-            <InputDialog
-                isOpen={createDialog.isOpen}
-                onClose={() => setCreateDialog({ ...createDialog, isOpen: false })}
-                onSubmit={handleCreateSubmit}
-                title={`Create ${createDialog.type === 'folder' ? 'Folder' : 'Note'}`}
-                placeholder={`Enter ${createDialog.type} name...`}
-            />
-
-            <DeleteDialog
-                isOpen={deleteDialog.isOpen}
-                onClose={() => setDeleteDialog({ ...deleteDialog, isOpen: false })}
-                onConfirm={handleDeleteConfirm}
-                itemName={deleteDialog.nodeTitle}
-            />
         </div>
     )
 }
