@@ -437,6 +437,7 @@ export const ImageUploadNode: React.FC<NodeViewProps> = (props) => {
   const { accept, limit, maxSize } = props.node.attrs
   const inputRef = useRef<HTMLInputElement>(null)
   const extension = props.extension
+  const [isHovered, setIsHovered] = useState(false)
 
   const uploadOptions: UploadOptions = {
     maxSize,
@@ -449,6 +450,16 @@ export const ImageUploadNode: React.FC<NodeViewProps> = (props) => {
 
   const { fileItems, uploadFiles, removeFileItem, clearAllFiles } =
     useFileUpload(uploadOptions)
+
+  const handleDelete = () => {
+    const pos = props.getPos()
+    if (typeof pos === 'number') {
+      props.editor
+        .chain()
+        .deleteRange({ from: pos, to: pos + props.node.nodeSize })
+        .run()
+    }
+  }
 
   const handleUpload = async (files: File[]) => {
     const urls = await uploadFiles(files)
@@ -506,11 +517,28 @@ export const ImageUploadNode: React.FC<NodeViewProps> = (props) => {
       className="tiptap-image-upload"
       tabIndex={0}
       onClick={handleClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       {!hasFiles && (
-        <ImageUploadDragArea onFile={handleUpload}>
-          <DropZoneContent maxSize={maxSize} limit={limit} />
-        </ImageUploadDragArea>
+        <div className="tiptap-image-upload-container">
+          {isHovered && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                handleDelete()
+              }}
+              className="tiptap-image-upload-delete-btn"
+              title="Remove upload area"
+              type="button"
+            >
+              <CloseIcon className="tiptap-button-icon" />
+            </button>
+          )}
+          <ImageUploadDragArea onFile={handleUpload}>
+            <DropZoneContent maxSize={maxSize} limit={limit} />
+          </ImageUploadDragArea>
+        </div>
       )}
 
       {hasFiles && (

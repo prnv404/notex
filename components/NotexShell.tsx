@@ -2,11 +2,9 @@
 
 import { useState, useCallback, useEffect } from "react"
 import { AppSidebar } from "./AppSidebar"
-import { SimpleEditor } from "./tiptap-templates/simple/simple-editor"
+import { SimpleEditor } from "./tiptap/editor"
 import { useNodes } from "@/lib/hooks/useNodes"
-import { Node } from "@/lib/types/node"
-import { useDebounce } from "@/hooks/use-debounce"
-import { cn } from "@/lib/tiptap-utils"
+
 
 export function NotexShell() {
     const { nodes, tree, loading, createNode, updateNode, deleteNode } = useNodes()

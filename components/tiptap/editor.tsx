@@ -5,7 +5,7 @@ import { EditorContent, EditorContext, useEditor } from "@tiptap/react"
 
 // --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit"
-import { Image } from "@tiptap/extension-image"
+import { CustomImage } from "@/components/tiptap-node/image-node/image-node-extension"
 import { TaskItem, TaskList } from "@tiptap/extension-list"
 import { TextAlign } from "@tiptap/extension-text-align"
 import { Typography } from "@tiptap/extension-typography"
@@ -13,6 +13,7 @@ import { Highlight } from "@tiptap/extension-highlight"
 import { Subscript } from "@tiptap/extension-subscript"
 import { Superscript } from "@tiptap/extension-superscript"
 import { Selection } from "@tiptap/extensions"
+import Placeholder from "@tiptap/extension-placeholder"
 
 // --- UI Primitives ---
 import { Button } from "@/components/tiptap-ui-primitive/button"
@@ -35,11 +36,13 @@ import "@/components/tiptap-node/heading-node/heading-node.scss"
 import "@/components/tiptap-node/paragraph-node/paragraph-node.scss"
 
 // --- Tiptap UI ---
+// --- Tiptap UI ---
 import { HeadingDropdownMenu } from "@/components/tiptap-ui/heading-dropdown-menu"
 import { ImageUploadButton } from "@/components/tiptap-ui/image-upload-button"
 import { ListDropdownMenu } from "@/components/tiptap-ui/list-dropdown-menu"
 import { BlockquoteButton } from "@/components/tiptap-ui/blockquote-button"
 import { CodeBlockButton } from "@/components/tiptap-ui/code-block-button"
+import { NoteTypeDropdown } from "@/components/tiptap-ui/note-type-dropdown"
 import {
   ColorHighlightPopover,
   ColorHighlightPopoverContent,
@@ -58,6 +61,10 @@ import { UndoRedoButton } from "@/components/tiptap-ui/undo-redo-button"
 import { ArrowLeftIcon } from "@/components/tiptap-icons/arrow-left-icon"
 import { HighlighterIcon } from "@/components/tiptap-icons/highlighter-icon"
 import { LinkIcon } from "@/components/tiptap-icons/link-icon"
+import { Share } from "lucide-react"
+
+// --- Components ---
+import { ShareModal } from "@/components/ShareModal"
 
 // --- Hooks ---
 import { useIsBreakpoint } from "@/hooks/use-is-breakpoint"
@@ -68,22 +75,34 @@ import { useCursorVisibility } from "@/hooks/use-cursor-visibility"
 import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 
 // --- Styles ---
-import "@/components/tiptap-templates/simple/simple-editor.scss"
+import "@/components/tiptap/editor.scss"
 
-import content from "@/components/tiptap-templates/simple/data/content.json"
+import content from "@/components/tiptap/data/content.json"
 
 const MainToolbarContent = ({
   onHighlighterClick,
   onLinkClick,
   isMobile,
+  noteType,
+  setNoteType,
+  showOutline,
+  setShowOutline,
+  onShareClick
 }: {
   onHighlighterClick: () => void
   onLinkClick: () => void
   isMobile: boolean
+  noteType: any
+  setNoteType: (type: any) => void
+  showOutline: boolean
+  setShowOutline: (show: boolean) => void
+  onShareClick: () => void
 }) => {
   return (
     <>
       <Spacer />
+
+      <ToolbarSeparator />
 
       <ToolbarGroup>
         <UndoRedoButton action="undo" />
@@ -93,10 +112,10 @@ const MainToolbarContent = ({
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <HeadingDropdownMenu levels={[1, 2, 3, 4]} portal={isMobile} />
+        <HeadingDropdownMenu levels={[1, 2, 3, 4]} portal={true} />
         <ListDropdownMenu
           types={["bulletList", "orderedList", "taskList"]}
-          portal={isMobile}
+          portal={true}
         />
         <BlockquoteButton />
         <CodeBlockButton />
@@ -141,6 +160,17 @@ const MainToolbarContent = ({
       </ToolbarGroup>
 
       <Spacer />
+
+      <ToolbarGroup className="mr-10 gap-2">
+
+        <Button
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 h-8 gap-2 shadow-sm transition-all font-medium !bg-green-600 !text-white rounded-none"
+          onClick={onShareClick}
+        >
+          <Share size={14} />
+          <span className="text-xs">Share</span>
+        </Button>
+      </ToolbarGroup>
     </>
   )
 }
@@ -186,6 +216,10 @@ export function SimpleEditor({ initialContent, onUpdate, fileName }: SimpleEdito
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
     "main"
   )
+  const [noteType, setNoteType] = useState("Note")
+  const [showOutline, setShowOutline] = useState(false)
+  const [showShareModal, setShowShareModal] = useState(false)
+
   const toolbarRef = useRef<HTMLDivElement>(null)
 
   const editor = useEditor({
@@ -212,12 +246,16 @@ export function SimpleEditor({ initialContent, onUpdate, fileName }: SimpleEdito
           enableClickSelection: true,
         },
       }),
+      Placeholder.configure({
+        placeholder: "What are you thinking about?",
+        emptyEditorClass: "is-editor-empty",
+      }),
       HorizontalRule,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       TaskList,
       TaskItem.configure({ nested: true }),
       Highlight.configure({ multicolor: true }),
-      Image,
+      CustomImage,
       Typography,
       Superscript,
       Subscript,
@@ -257,7 +295,7 @@ export function SimpleEditor({ initialContent, onUpdate, fileName }: SimpleEdito
   }, [isMobile, mobileView])
 
   return (
-    <div className="simple-editor-wrapper flex flex-col h-full bg-[var(--bg-color)]">
+    <div className="simple-editor-wrapper flex flex-col h-full bg-[var(--vscode-bg)]">
       {/* File Name Header (Optional but good for context) */}
       {/* <div className="px-12 py-2 text-sm text-[var(--muted-foreground)] border-b border-[var(--border)]">
          {fileName}
@@ -273,12 +311,18 @@ export function SimpleEditor({ initialContent, onUpdate, fileName }: SimpleEdito
               }
               : {}),
           }}
+          className="border-b border-[var(--vscode-border)] bg-[var(--vscode-bg)]/80 backdrop-blur-md sticky top-0 z-10 shadow-sm"
         >
           {mobileView === "main" ? (
             <MainToolbarContent
               onHighlighterClick={() => setMobileView("highlighter")}
               onLinkClick={() => setMobileView("link")}
               isMobile={isMobile}
+              noteType={noteType}
+              setNoteType={setNoteType}
+              showOutline={showOutline}
+              setShowOutline={setShowOutline}
+              onShareClick={() => setShowShareModal(true)}
             />
           ) : (
             <MobileToolbarContent
@@ -288,12 +332,44 @@ export function SimpleEditor({ initialContent, onUpdate, fileName }: SimpleEdito
           )}
         </Toolbar>
 
-        <EditorContent
-          editor={editor}
-          role="presentation"
-          className="simple-editor-content flex-1 overflow-y-auto"
-        />
+        <div className="flex-1 overflow-y-auto relative">
+          {showOutline ? (
+            <div className="absolute inset-0 bg-[var(--vscode-bg)] z-20 p-8">
+              <h2 className="text-lg font-semibold mb-4 text-[var(--foreground)]">Outline</h2>
+              <div className="space-y-2 border-l-2 border-[var(--border)] ml-2 pl-4">
+                {/* Mock Outline */}
+                <div className="text-sm font-medium">Introduction</div>
+                <div className="text-sm text-[var(--muted-foreground)] ml-2">Key Concepts</div>
+                <div className="text-sm font-medium">Main Argument</div>
+                <div className="text-sm text-[var(--muted-foreground)] ml-2">Evidence A</div>
+                <div className="text-sm text-[var(--muted-foreground)] ml-2">Evidence B</div>
+                <div className="text-sm font-medium">Conclusion</div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Apple Notes Date Header */}
+              <div className="text-center text-[var(--muted-foreground)] text-xs font-medium py-6 select-none opacity-60">
+                {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} at {new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+              </div>
+
+              <EditorContent
+                editor={editor}
+                role="presentation"
+                className="simple-editor-content"
+              />
+
+            </>
+          )}
+        </div>
       </EditorContext.Provider>
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        noteTitle={fileName}
+      />
     </div>
   )
 }

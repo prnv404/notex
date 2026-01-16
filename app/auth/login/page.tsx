@@ -93,7 +93,7 @@ export default function LoginPage() {
                         <div className="flex items-center justify-center gap-3 text-sm">
                             <div className="w-1 h-1 rounded-full bg-blue-500 shrink-0"></div>
                             <p className="text-[var(--muted-foreground)]">
-                                Rich text editor with markdown
+                                Rich text editor
                             </p>
                         </div>
                         <div className="flex items-center justify-center gap-3 text-sm">

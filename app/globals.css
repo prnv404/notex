@@ -19,42 +19,50 @@
   /* Tailwind CSS variables for shadcn/ui compatibility */
   :root {
     --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --foreground: 0 0% 3.9%;
 
-    /* VS Code Colors - Light Theme Default */
+    /* Apple Notes Colors - Light Theme */
     --vscode-bg: #ffffff;
-    --vscode-sidebar-bg: #f3f3f3;
-    --vscode-activity-bar-bg: #2c2c2c;
-    --vscode-activity-bar-fg: #ffffff99;
-    --vscode-activity-bar-active-fg: #ffffff;
-    --vscode-activity-bar-active-border: #ffffff;
-    --vscode-statusbar-bg: #007acc;
-    --vscode-statusbar-fg: #ffffff;
-    --vscode-tab-bg: #ececec;
+    /* Clean white editor */
+    --vscode-sidebar-bg: #f2f2f7;
+    /* Apple System Gray 6 */
+    --vscode-activity-bar-bg: #f2f2f7;
+    --vscode-activity-bar-fg: #007aff;
+    /* Apple Blue */
+    --vscode-activity-bar-active-fg: #007aff;
+    --vscode-activity-bar-active-border: #007aff;
+    --vscode-statusbar-bg: #f2f2f7;
+    --vscode-statusbar-fg: #8e8e93;
+    --vscode-tab-bg: #f2f2f7;
     --vscode-tab-active-bg: #ffffff;
-    --vscode-border: #e5e5e5;
-    --vscode-list-hover: #e8e8e8;
-    --vscode-list-active: #d6ebff;
-    /* Light blue selection */
-    --vscode-selection: #add6ff;
+    --vscode-border: #c6c6c8;
+    /* Apple Separator Color */
+    --vscode-list-hover: #e5e5ea;
+    /* Apple System Gray 5 */
+    --vscode-list-active: #ffcc00;
+    /* Apple Notes Yellow */
+    --vscode-list-active-foreground: #000000;
+    --vscode-selection: #ffcc0040;
+    /* Transparent Yellow */
 
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 43 100% 50%;
+    /* Apple Yellow */
     --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 10% 3.9%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 43 100% 50%;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -64,62 +72,65 @@
   }
 
   .dark {
-    /* Modern dark theme with better contrast and visual hierarchy */
-    --background: 222 47% 11%;
-    /* Rich dark blue-gray base */
-    --foreground: 210 40% 98%;
+    /* Apple Notes Colors - Dark Theme - Refined */
+    --background: 0 0% 11%;
+    --foreground: 0 0% 98%;
 
-    /* VS Code Colors - Modern Dark Theme with Blue-Gray Tones */
-    --vscode-bg: #0e1014a4;
-    /* Main editor background - deep blue-gray */
-    --vscode-sidebar-bg: #0d0f13;
-    /* Sidebar matches editor background */
-    --vscode-activity-bar-bg: #0d0f13;
-    /* Activity bar darkest */
-    --vscode-activity-bar-fg: #8b92a8;
-    /* Muted blue-gray icons */
-    --vscode-activity-bar-active-fg: #6c9ef8;
-    /* Bright blue for active */
-    --vscode-activity-bar-active-border: #6c9ef8;
-    --vscode-statusbar-bg: #1e2433;
-    /* Subtle status bar */
-    --vscode-statusbar-fg: #8b92a8;
-    --vscode-tab-bg: #151a26;
-    --vscode-tab-active-bg: #1a1f2e;
-    --vscode-border: #2a3447;
-    /* Visible but subtle borders */
-    --vscode-list-hover: #2c2f31;
-    /* Subtle hover state */
-    --vscode-list-active: #1f2125;
-    /* Clear active state with blue tint */
-    --vscode-list-active-foreground: #e3e8f0;
-    /* Brighter text when active */
-    --vscode-selection: #2d4f7c;
-    /* Blue selection */
+    --vscode-bg: #1e1e1e;
+    /* Deep Gray Surface */
+    --vscode-sidebar-bg: #252526;
+    /* Slightly Lighter Sidebar */
+    --vscode-surface-1: #2d2d2d;
+    /* Layered Surface 1 */
+    --vscode-surface-2: #363636;
+    /* Layered Surface 2 */
 
-    --card: 222 47% 11%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 15%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217 91% 60%;
-    /* Vibrant blue */
-    --primary-foreground: 210 40% 98%;
-    --secondary: 217 19% 27%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 215 20% 25%;
-    --muted-foreground: 217 10% 64.9%;
-    --accent: 217 91% 60%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 215 25% 27%;
-    --input: 215 25% 27%;
-    --ring: 217 91% 60%;
-    --chart-1: 217 91% 60%;
-    --chart-2: 142 76% 36%;
-    --chart-3: 47 96% 53%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --vscode-activity-bar-bg: #252526;
+    --vscode-activity-bar-fg: #ffcc00;
+    --vscode-activity-bar-active-fg: #ffcc00;
+    --vscode-activity-bar-active-border: #ffcc00;
+    --vscode-statusbar-bg: #252526;
+    --vscode-statusbar-fg: #8e8e93;
+    --vscode-tab-bg: #252526;
+    --vscode-tab-active-bg: #1e1e1e;
+    --vscode-border: #2b2b2b;
+    /* Subtle Border */
+
+    /* Refined List Selection */
+    --vscode-list-hover: #2d2d2d;
+    --vscode-list-active: #3a3a3a;
+    /* Subtle Active Background */
+    --vscode-list-active-foreground: #ffffff;
+    --vscode-selection: #4d4d4d;
+    /* Subtle Text Selection */
+
+    --card: 0 0% 13%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 13%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 43 100% 50%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 16%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 16%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 16%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 16%;
+    --input: 0 0% 16%;
+    --ring: 43 100% 50%;
+
+    /* Shadows */
+    --shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
+    --shadow-elevation: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Shared Variables */
+  :root {
+    --duration-fast: 150ms;
+    --duration-medium: 300ms;
   }
 
   /* .dark block removed as it's now default */
@@ -137,15 +148,14 @@
     margin: 0;
     padding: 0;
     overscroll-behavior: none;
-    font-size: 120%;
-    /* Increase base font size by 25% */
+    font-size: 16px;
   }
 
   body {
-    background-color: hsl(var(--background));
+    background-color: var(--vscode-bg);
     color: hsl(var(--foreground));
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    color: var(--tt-theme-text);
+    font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", Helvetica, "Segoe UI", Roboto, Arial, sans-serif;
+    color: var(--foreground);
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
@@ -153,20 +163,29 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Custom scrollbar styling */
+  /* Thin, minimal scrollbars for that Apple feel */
   ::-webkit-scrollbar {
-    width: 0.5rem;
-    height: 0.5rem;
+    width: 8px;
+    height: 8px;
   }
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: var(--tt-scrollbar-color) transparent;
+    scrollbar-color: transparent transparent;
+    /* Hidden by default often in Apple apps until scroll */
+  }
+
+  *:hover {
+    scrollbar-color: var(--muted-foreground) transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: var(--tt-scrollbar-color);
+    background-color: transparent;
     border-radius: 9999px;
+  }
+
+  *:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(120, 120, 120, 0.3);
   }
 
   ::-webkit-scrollbar-track {
@@ -175,11 +194,13 @@
 
   /* Selection styling */
   ::selection {
-    background-color: var(--tt-selection-color);
+    background-color: var(--vscode-selection);
+    color: inherit;
   }
 
   ::-moz-selection {
-    background-color: var(--tt-selection-color);
+    background-color: var(--vscode-selection);
+    color: inherit;
   }
 
   /* Ensure all buttons and clickable elements show pointer cursor */
@@ -199,10 +220,41 @@
   }
 }
 
-/* TipTap Editor Styles */
+/* TipTap Editor Styles - Apple Notes mimic */
 .tiptap.ProseMirror {
-  font-family: "DM Sans", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", Helvetica, "Segoe UI", Roboto, Arial, sans-serif !important;
   outline: none;
+  font-size: 1.125rem;
+  /* 18px body */
+  line-height: 1.6;
+  color: var(--foreground);
+}
+
+.tiptap.ProseMirror p {
+  margin-bottom: 1em;
+}
+
+.tiptap.ProseMirror h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  letter-spacing: -0.02em;
+}
+
+.tiptap.ProseMirror h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 1.4em;
+  margin-bottom: 0.5em;
+  letter-spacing: -0.01em;
+}
+
+.tiptap.ProseMirror h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.2em;
+  margin-bottom: 0.4em;
 }
 
 .tiptap.ProseMirror:focus {
@@ -213,14 +265,16 @@
 .simple-editor-wrapper {
   width: 100%;
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
+  /* Prevent double scrollbars, flex layout handles inner scrolling */
+  background-color: var(--vscode-bg);
 }
 
 .simple-editor-content {
-  /* Reduced width for better readability */
-  max-width: 750px;
+  max-width: 720px;
+  min-width: 320px;
   width: 100%;
-  margin: 5 auto;
+  margin: 0 auto;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -229,12 +283,12 @@
 
 .simple-editor-content .tiptap.ProseMirror.simple-editor {
   flex: 1;
-  /* Reduced padding slightly for better use of space */
-  padding: 1.5rem 2rem 30vh;
+  padding: 3rem 2rem 30vh;
+  /* More top padding for breathable header */
 }
 
 @media screen and (max-width: 480px) {
   .simple-editor-content .tiptap.ProseMirror.simple-editor {
-    padding: 1rem 1.5rem 30vh;
+    padding: 1.5rem 1.5rem 30vh;
   }
 }

@@ -76,20 +76,25 @@ export function UserProfile() {
             </button>
 
             {/* Dropdown Menu */}
+            {/* Dropdown Menu - Positioned above */}
             {isMenuOpen && (
                 <>
                     <div
-                        className="fixed inset-0 z-40"
+                        className="fixed inset-0 z-40 bg-transparent"
                         onClick={() => setIsMenuOpen(false)}
                     />
-                    <div className="absolute bottom-full left-0 right-0 mb-1 mx-2 bg-[var(--vscode-bg)] border border-[var(--vscode-border)] rounded-lg shadow-xl z-50 overflow-hidden">
-                        <button
-                            onClick={handleSignOut}
-                            className="w-full px-3 py-2.5 flex items-center gap-3 text-sm text-[var(--foreground)] hover:bg-[var(--vscode-list-hover)] transition-colors"
-                        >
-                            <LogOut size={16} className="text-[var(--muted-foreground)]" />
-                            <span>Sign Out</span>
-                        </button>
+                    <div
+                        className="absolute bottom-full left-0 right-0 mb-1 mx-2 bg-[var(--vscode-bg)] border border-[var(--vscode-border)] rounded-lg shadow-lg z-50 overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200"
+                    >
+                        <div className="p-1">
+                            <button
+                                onClick={handleSignOut}
+                                className="w-full px-3 py-2 flex items-center gap-2 text-sm text-[var(--foreground)] hover:bg-[var(--vscode-list-hover)] hover:text-[var(--foreground)] rounded-md transition-colors"
+                            >
+                                <LogOut size={14} className="text-[var(--muted-foreground)]" />
+                                <span>Sign Out</span>
+                            </button>
+                        </div>
                     </div>
                 </>
             )}
